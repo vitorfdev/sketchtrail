@@ -7,6 +7,8 @@ import 'package:sketchtrail/data/database.dart';
 import 'package:sketchtrail/pages/artwork_form_page.dart';
 import 'package:sketchtrail/providers/providers.dart';
 import 'package:sketchtrail/services/file_service.dart';
+import 'package:sketchtrail/widgets/artwork_card.dart';
+import 'package:sketchtrail/pages/artwork_detail_page.dart';
 
 class PortfolioPage extends ConsumerWidget {
   const PortfolioPage({super.key});
@@ -26,23 +28,30 @@ class PortfolioPage extends ConsumerWidget {
               child: Text('No artworks found.'),
             );
           }
-          return ListView.builder(
+
+          final fileService = FileService();
+
+          return GridView.builder(
+            padding: const EdgeInsets.all(12),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              childAspectRatio: 0.85,
+            ),
             itemCount: artworks.length,
             itemBuilder: (context, index) {
               final artwork = artworks[index];
-              return ListTile(
-                leading: ArtworkThumb(
-                  relativeThumbnailPath: artwork.thumbnailPath,
-                  fileService: FileService(),
-                ),
-                title: Text(artwork.title),
-                subtitle: Text('${artwork.softwareUsed} • ID: ${artwork.id}'),
-                trailing: IconButton(
-                  icon: const Icon(Icons.delete, color: Colors.red),
-                  onPressed: () {
-                    ref.read(artworkRepoProvider).delete(artwork.id);
-                  },
-                ),
+              return ArtworkCard(
+                artwork: artwork,
+                fileService: fileService,
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => ArtworkDetailPage(artwork: artwork),
+                    ),
+                  );
+                },
               );
             },
           );

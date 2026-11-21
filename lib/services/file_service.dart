@@ -70,4 +70,15 @@ class FileService {
       absoluteImagePath: destinationFile.path,
     );
   }
+
+  Future<void> deleteByRelativePath(String? relativePath) async {
+    if (relativePath == null || relativePath.isEmpty) return;
+
+    final fullPath = await resolveAbsolutePath(relativePath);
+    final file = File(fullPath);
+
+    if (await file.exists()) {
+      await file.delete();
+    }
+  }
 }

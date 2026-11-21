@@ -10,7 +10,12 @@ import 'package:sketchtrail/services/file_service.dart';
 import 'package:sketchtrail/services/thumbnail_service.dart';
 
 class ArtworkFormPage extends ConsumerStatefulWidget {
-  const ArtworkFormPage({super.key});
+  final Artwork? artwork;
+
+  const ArtworkFormPage({
+    super.key,
+    this.artwork,
+  });
 
   @override
   ConsumerState<ArtworkFormPage> createState() => _ArtworkFormPageState();
@@ -27,6 +32,16 @@ class _ArtworkFormPageState extends ConsumerState<ArtworkFormPage> {
   PickedArtworkFiles? _pickedFiles;
   String? _imageError;
   bool _isSaving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final existing = widget.artwork;
+    if (existing != null) {
+      _titleController.text = existing.title;
+      _softwareController.text = existing.softwareUsed;
+    }
+  }
 
   @override
   void dispose() {
@@ -50,8 +65,9 @@ class _ArtworkFormPageState extends ConsumerState<ArtworkFormPage> {
   Future<void> _saveArtwork() async {
     if (_isSaving) return;
 
+    final existing = widget.artwork;
     final isFormValid = _formKey.currentState?.validate() ?? false;
-    final hasImage = _pickedFiles != null;
+    final hasImage = _pickedFiles != null || existing != null;
 
     if (!hasImage) {
       setState(() {
@@ -68,27 +84,53 @@ class _ArtworkFormPageState extends ConsumerState<ArtworkFormPage> {
     });
 
     try {
-      final picked = _pickedFiles!;
-      final baseName = p.basenameWithoutExtension(picked.relativeImagePath);
+      final title = _titleController.text.trim();
+      final softwareUsed = _softwareController.text.trim();
 
-      // Image already copied to <appSupportDir>/images/
-      // Generate thumbnail to <appSupportDir>/thumbnails/
-      final thumb = await _thumbnailService.generateThumbnail(
-        sourceImagePath: picked.absoluteImagePath,
-        baseFileNameWithoutExt: baseName,
-      );
+      if (existing == null) {
+        final picked = _pickedFiles!;
+        final baseName = p.basenameWithoutExtension(picked.relativeImagePath);
 
-      // Insert on db
-      final companion = ArtworksCompanion.insert(
-        title: _titleController.text.trim(),
-        imagePath: picked.relativeImagePath,
-        thumbnailPath: thumb.relativeThumbnailPath,
-        softwareUsed: _softwareController.text.trim(),
-        createdAt: drift.Value(DateTime.now()),
-      );
+        final thumb = await _thumbnailService.generateThumbnail(
+          sourceImagePath: picked.absoluteImagePath,
+          baseFileNameWithoutExt: baseName,
+        );
 
-      // Adjust for the correct method 
-      await ref.read(artworkRepoProvider).create(companion);
+        final companion = ArtworksCompanion.insert(
+          title: title,
+          imagePath: picked.relativeImagePath,
+          thumbnailPath: thumb.relativeThumbnailPath,
+          softwareUsed: softwareUsed,
+          createdAt: drift.Value(DateTime.now()),
+        );
+
+        await ref.read(artworkRepoProvider).create(companion);
+      } else {
+        String imagePath = existing.imagePath;
+        String thumbnailPath = existing.thumbnailPath;
+
+        if (_pickedFiles != null) {
+          final picked = _pickedFiles!;
+          final baseName = p.basenameWithoutExtension(picked.relativeImagePath);
+
+          final thumb = await _thumbnailService.generateThumbnail(
+            sourceImagePath: picked.absoluteImagePath,
+            baseFileNameWithoutExt: baseName,
+          );
+
+          imagePath = picked.relativeImagePath;
+          thumbnailPath = thumb.relativeThumbnailPath;
+        }
+
+        final updatedArtwork = existing.copyWith(
+          title: title,
+          softwareUsed: softwareUsed,
+          imagePath: imagePath,
+          thumbnailPath: thumbnailPath,
+        );
+
+        await ref.read(artworkRepoProvider).replace(updatedArtwork);
+      }
 
       if (!mounted) return;
       Navigator.of(context).pop(true);
@@ -110,7 +152,7 @@ class _ArtworkFormPageState extends ConsumerState<ArtworkFormPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('New Artwork'),
+        title: Text(widget.artwork != null ? 'Edit Artwork' : 'New Artwork'),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
