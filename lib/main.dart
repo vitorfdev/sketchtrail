@@ -4,9 +4,7 @@ import 'package:sketchtrail/pages/home.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() {
-  runApp(const ProviderScope(
-    child: MyApp(),
-  ));
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -21,7 +19,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         textTheme: GoogleFonts.patrickHandTextTheme(
           Theme.of(context).textTheme,
-        )
+        ),
       ),
       home: const HomePage(),
     );

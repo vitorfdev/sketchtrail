@@ -2,8 +2,6 @@ import 'dart:io';
 
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:drift/drift.dart';
-import 'package:sketchtrail/data/database.dart';
 import 'package:sketchtrail/pages/artwork_form_page.dart';
 import 'package:sketchtrail/providers/providers.dart';
 import 'package:sketchtrail/services/file_service.dart';
@@ -18,15 +16,11 @@ class PortfolioPage extends ConsumerWidget {
     final artworksAsync = ref.watch(artworksProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Portfolio'),
-      ),
+      appBar: AppBar(title: const Text('Portfolio')),
       body: artworksAsync.when(
         data: (artworks) {
           if (artworks.isEmpty) {
-            return const Center(
-              child: Text('No artworks found.'),
-            );
+            return const Center(child: Text('No artworks found.'));
           }
 
           final fileService = FileService();
@@ -62,11 +56,8 @@ class PortfolioPage extends ConsumerWidget {
       floatingActionButton: FloatingActionButton(
         heroTag: 'portfolio-add-artwork',
         onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => const ArtworkFormPage(),
-            ),
-          );
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (_) => const ArtworkFormPage()));
         },
         child: const Icon(Icons.add),
       ),
@@ -89,6 +80,9 @@ class ArtworkThumb extends StatelessWidget {
     return FutureBuilder<String>(
       future: fileService.resolveAbsolutePath(relativeThumbnailPath),
       builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return const Center(child: Icon(Icons.broken_image));
+        }
         if (!snapshot.hasData) {
           return const SizedBox(
             width: 56,
@@ -102,7 +96,7 @@ class ArtworkThumb extends StatelessWidget {
           width: 56,
           height: 56,
           fit: BoxFit.cover,
-          errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
+          errorBuilder: (_, _, _) => const Icon(Icons.broken_image),
         );
       },
     );

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart' hide Feedback;
 import 'package:sketchtrail/data/database.dart';
 import 'package:sketchtrail/pages/artwork_form_page.dart';
@@ -552,6 +553,7 @@ class ArtworkDetailPage extends ConsumerWidget {
         title: Text(artwork.title),
         actions: [
           IconButton(
+            tooltip: 'Edit artwork',
             icon: const Icon(Icons.edit),
             onPressed: () {
               Navigator.of(context).push(
@@ -562,6 +564,7 @@ class ArtworkDetailPage extends ConsumerWidget {
             },
           ),
           IconButton(
+            tooltip: 'Delete artwork',
             icon: const Icon(Icons.delete),
             onPressed: () => _confirmAndDelete(context, ref),
           ),
@@ -575,6 +578,12 @@ class ArtworkDetailPage extends ConsumerWidget {
             FutureBuilder<String>(
               future: fileService.resolveAbsolutePath(artwork.imagePath),
               builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return const SizedBox(
+                    height: 200,
+                    child: Center(child: Icon(Icons.broken_image, size: 48)),
+                  );
+                }
                 if (!snapshot.hasData) {
                   return const SizedBox(
                     height: 260,
@@ -585,7 +594,7 @@ class ArtworkDetailPage extends ConsumerWidget {
                 return Image.file(
                   File(snapshot.data!),
                   fit: BoxFit.contain,
-                  errorBuilder: (_, __, ___) => const SizedBox(
+                  errorBuilder: (_, _, _) => const SizedBox(
                     height: 200,
                     child: Center(child: Icon(Icons.broken_image, size: 48)),
                   ),
@@ -603,7 +612,7 @@ class ArtworkDetailPage extends ConsumerWidget {
             Text(artwork.softwareUsed),
             const SizedBox(height: 12),
             Text('Created At', style: Theme.of(context).textTheme.labelLarge),
-            Text(artwork.createdAt.toString()),
+            Text(DateFormat.yMMMd().format(artwork.createdAt)),
             const SizedBox(height: 20),
             StreamBuilder<List<Brush>>(
               stream: repository.watchArtworkBrushes(artwork.id),
@@ -688,7 +697,7 @@ class ArtworkDetailPage extends ConsumerWidget {
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: references.length,
-                        separatorBuilder: (_, __) => const Divider(height: 8),
+                        separatorBuilder: (_, _) => const Divider(height: 8),
                         itemBuilder: (context, index) {
                           final reference = references[index];
                           return ListTile(
@@ -745,7 +754,7 @@ class ArtworkDetailPage extends ConsumerWidget {
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: feedbacks.length,
-                        separatorBuilder: (_, __) => const Divider(height: 8),
+                        separatorBuilder: (_, _) => const Divider(height: 8),
                         itemBuilder: (context, index) {
                           final feedback = feedbacks[index];
                           return ListTile(

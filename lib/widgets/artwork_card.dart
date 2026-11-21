@@ -29,6 +29,9 @@ class ArtworkCard extends StatelessWidget {
               child: FutureBuilder<String>(
                 future: fileService.resolveAbsolutePath(artwork.thumbnailPath),
                 builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return const Center(child: Icon(Icons.broken_image));
+                  }
                   if (!snapshot.hasData) {
                     return const Center(
                       child: CircularProgressIndicator(strokeWidth: 2),
@@ -39,9 +42,8 @@ class ArtworkCard extends StatelessWidget {
                     File(snapshot.data!),
                     fit: BoxFit.cover,
                     cacheWidth: 400,
-                    errorBuilder: (_, __, ___) => const Center(
-                      child: Icon(Icons.broken_image),
-                    ),
+                    errorBuilder: (_, _, _) =>
+                        const Center(child: Icon(Icons.broken_image)),
                   );
                 },
               ),
