@@ -37,6 +37,7 @@ class MaterialsPage extends ConsumerWidget {
       text: material?.status ?? 'Not started',
     );
     var selectedType = material?.type ?? 'Article';
+    var isSaving = false;
     if (!types.contains(selectedType)) {
       selectedType = 'Other';
     }
@@ -118,46 +119,55 @@ class MaterialsPage extends ConsumerWidget {
                     ),
                     const SizedBox(height: 12),
                     FilledButton(
-                      onPressed: () async {
-                        final title = titleController.text.trim();
-                        if (title.isEmpty) return;
+                      onPressed: isSaving
+                          ? null
+                          : () async {
+                              final title = titleController.text.trim();
+                              if (title.isEmpty) return;
+                              setModalState(() => isSaving = true);
 
-                        final entry = db.MaterialsCompanion(
-                          id: material == null
-                              ? const Value.absent()
-                              : Value(material.id),
-                          title: Value(title),
-                          type: Value(selectedType),
-                          linkPath: Value(linkController.text.trim()),
-                          status: Value(
-                            statusController.text.trim().isEmpty
-                                ? 'Not started'
-                                : statusController.text.trim(),
-                          ),
-                        );
-                        final repository = ref.read(materialRepoProvider);
-                        if (material == null) {
-                          await repository.addMaterial(
-                            db.MaterialsCompanion.insert(
-                              title: title,
-                              type: selectedType,
-                              linkPath: Value(linkController.text.trim()),
-                              status: Value(
-                                statusController.text.trim().isEmpty
-                                    ? 'Not started'
-                                    : statusController.text.trim(),
-                              ),
-                            ),
-                          );
-                        } else {
-                          await repository.updateMaterial(entry);
-                        }
+                              final entry = db.MaterialsCompanion(
+                                id: material == null
+                                    ? const Value.absent()
+                                    : Value(material.id),
+                                title: Value(title),
+                                type: Value(selectedType),
+                                linkPath: Value(linkController.text.trim()),
+                                status: Value(
+                                  statusController.text.trim().isEmpty
+                                      ? 'Not started'
+                                      : statusController.text.trim(),
+                                ),
+                              );
+                              final repository = ref.read(materialRepoProvider);
+                              if (material == null) {
+                                await repository.addMaterial(
+                                  db.MaterialsCompanion.insert(
+                                    title: title,
+                                    type: selectedType,
+                                    linkPath: Value(linkController.text.trim()),
+                                    status: Value(
+                                      statusController.text.trim().isEmpty
+                                          ? 'Not started'
+                                          : statusController.text.trim(),
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                await repository.updateMaterial(entry);
+                              }
 
-                        if (sheetContext.mounted) {
-                          Navigator.of(sheetContext).pop();
-                        }
-                      },
-                      child: Text(material == null ? 'Add Material' : 'Save'),
+                              if (sheetContext.mounted) {
+                                Navigator.of(sheetContext).pop();
+                              }
+                            },
+                      child: isSaving
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : Text(material == null ? 'Add Material' : 'Save'),
                     ),
                   ],
                 ),
@@ -246,6 +256,7 @@ class MaterialsPage extends ConsumerWidget {
         },
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'materials-add-material',
         onPressed: () => _showMaterialSheet(context, ref),
         tooltip: 'Add material',
         child: const Icon(Icons.add),

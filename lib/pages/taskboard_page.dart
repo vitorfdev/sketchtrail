@@ -14,6 +14,7 @@ class TaskboardPage extends ConsumerStatefulWidget {
 
 class _TaskboardPageState extends ConsumerState<TaskboardPage> {
   DateTime _selectedDate = stripTime(DateTime.now());
+  bool _isSaving = false;
 
   Future<void> _pickDate() async {
     final picked = await showDatePicker(
@@ -40,43 +41,62 @@ class _TaskboardPageState extends ConsumerState<TaskboardPage> {
       context: context,
       isScrollControlled: true,
       builder: (sheetContext) {
-        return Padding(
-          padding: EdgeInsets.only(
-            left: 16,
-            right: 16,
-            top: 16,
-            bottom: MediaQuery.of(sheetContext).viewInsets.bottom + 16,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                task == null ? 'Add Task' : 'Edit Task',
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+        return StatefulBuilder(
+          builder: (stateContext, setModalState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                left: 16,
+                right: 16,
+                top: 16,
+                bottom: MediaQuery.of(sheetContext).viewInsets.bottom + 16,
               ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: controller,
-                autofocus: true,
-                textCapitalization: TextCapitalization.sentences,
-                decoration: const InputDecoration(
-                  labelText: 'Task',
-                  border: OutlineInputBorder(),
-                ),
-                onFieldSubmitted: (_) =>
-                    _saveTask(sheetContext, controller.text, task),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    task == null ? 'Add Task' : 'Edit Task',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  TextFormField(
+                    controller: controller,
+                    autofocus: true,
+                    enabled: !_isSaving,
+                    textCapitalization: TextCapitalization.sentences,
+                    decoration: const InputDecoration(
+                      labelText: 'Task',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  FilledButton(
+                    onPressed: _isSaving
+                        ? null
+                        : () async {
+                            if (controller.text.trim().isEmpty) return;
+                            setModalState(() => _isSaving = true);
+                            await _saveTask(
+                              sheetContext,
+                              controller.text,
+                              task,
+                            );
+                          },
+                    child: _isSaving
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : Text(task == null ? 'Add Task' : 'Save'),
+                  ),
+                ],
               ),
-              const SizedBox(height: 12),
-              FilledButton(
-                onPressed: () => _saveTask(sheetContext, controller.text, task),
-                child: Text(task == null ? 'Add Task' : 'Save'),
-              ),
-            ],
-          ),
+            );
+          },
         );
       },
     );
@@ -204,6 +224,7 @@ class _TaskboardPageState extends ConsumerState<TaskboardPage> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'taskboard-add-task',
         onPressed: () => _showTaskSheet(),
         tooltip: 'Add task',
         child: const Icon(Icons.add),

@@ -35,7 +35,7 @@ class AppDatabase extends _$AppDatabase {
 
   // Increment the schema version when you change the tables and columns.
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -57,6 +57,11 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from < 5) {
         await m.createTable(materials);
+      }
+      // Version 1 databases create the Feedbacks table from the current schema,
+      // so they already receive the author column while creating it.
+      if (from >= 2 && from < 6) {
+        await m.addColumn(feedbacks, feedbacks.author);
       }
     },
     beforeOpen: (details) async {

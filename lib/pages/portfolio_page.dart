@@ -60,6 +60,7 @@ class PortfolioPage extends ConsumerWidget {
         error: (error, stackTrace) => Center(child: Text('Error: $error')),
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'portfolio-add-artwork',
         onPressed: () {
           Navigator.of(context).push(
             MaterialPageRoute(

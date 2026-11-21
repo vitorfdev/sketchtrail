@@ -1380,6 +1380,16 @@ class $FeedbacksTable extends Feedbacks
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _authorMeta = const VerificationMeta('author');
+  @override
+  late final GeneratedColumn<String> author = GeneratedColumn<String>(
+    'author',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
   static const VerificationMeta _noteMeta = const VerificationMeta('note');
   @override
   late final GeneratedColumn<String> note = GeneratedColumn<String>(
@@ -1402,7 +1412,14 @@ class $FeedbacksTable extends Feedbacks
     defaultValue: currentDateAndTime,
   );
   @override
-  List<GeneratedColumn> get $columns => [id, artworkId, type, note, createdAt];
+  List<GeneratedColumn> get $columns => [
+    id,
+    artworkId,
+    type,
+    author,
+    note,
+    createdAt,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1433,6 +1450,12 @@ class $FeedbacksTable extends Feedbacks
       );
     } else if (isInserting) {
       context.missing(_typeMeta);
+    }
+    if (data.containsKey('author')) {
+      context.handle(
+        _authorMeta,
+        author.isAcceptableOrUnknown(data['author']!, _authorMeta),
+      );
     }
     if (data.containsKey('note')) {
       context.handle(
@@ -1469,6 +1492,10 @@ class $FeedbacksTable extends Feedbacks
         DriftSqlType.string,
         data['${effectivePrefix}type'],
       )!,
+      author: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}author'],
+      )!,
       note: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}note'],
@@ -1490,12 +1517,14 @@ class Feedback extends DataClass implements Insertable<Feedback> {
   final int id;
   final int artworkId;
   final String type;
+  final String author;
   final String note;
   final DateTime createdAt;
   const Feedback({
     required this.id,
     required this.artworkId,
     required this.type,
+    required this.author,
     required this.note,
     required this.createdAt,
   });
@@ -1505,6 +1534,7 @@ class Feedback extends DataClass implements Insertable<Feedback> {
     map['id'] = Variable<int>(id);
     map['artwork_id'] = Variable<int>(artworkId);
     map['type'] = Variable<String>(type);
+    map['author'] = Variable<String>(author);
     map['note'] = Variable<String>(note);
     map['created_at'] = Variable<DateTime>(createdAt);
     return map;
@@ -1515,6 +1545,7 @@ class Feedback extends DataClass implements Insertable<Feedback> {
       id: Value(id),
       artworkId: Value(artworkId),
       type: Value(type),
+      author: Value(author),
       note: Value(note),
       createdAt: Value(createdAt),
     );
@@ -1529,6 +1560,7 @@ class Feedback extends DataClass implements Insertable<Feedback> {
       id: serializer.fromJson<int>(json['id']),
       artworkId: serializer.fromJson<int>(json['artworkId']),
       type: serializer.fromJson<String>(json['type']),
+      author: serializer.fromJson<String>(json['author']),
       note: serializer.fromJson<String>(json['note']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
@@ -1540,6 +1572,7 @@ class Feedback extends DataClass implements Insertable<Feedback> {
       'id': serializer.toJson<int>(id),
       'artworkId': serializer.toJson<int>(artworkId),
       'type': serializer.toJson<String>(type),
+      'author': serializer.toJson<String>(author),
       'note': serializer.toJson<String>(note),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
@@ -1549,12 +1582,14 @@ class Feedback extends DataClass implements Insertable<Feedback> {
     int? id,
     int? artworkId,
     String? type,
+    String? author,
     String? note,
     DateTime? createdAt,
   }) => Feedback(
     id: id ?? this.id,
     artworkId: artworkId ?? this.artworkId,
     type: type ?? this.type,
+    author: author ?? this.author,
     note: note ?? this.note,
     createdAt: createdAt ?? this.createdAt,
   );
@@ -1563,6 +1598,7 @@ class Feedback extends DataClass implements Insertable<Feedback> {
       id: data.id.present ? data.id.value : this.id,
       artworkId: data.artworkId.present ? data.artworkId.value : this.artworkId,
       type: data.type.present ? data.type.value : this.type,
+      author: data.author.present ? data.author.value : this.author,
       note: data.note.present ? data.note.value : this.note,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
@@ -1574,6 +1610,7 @@ class Feedback extends DataClass implements Insertable<Feedback> {
           ..write('id: $id, ')
           ..write('artworkId: $artworkId, ')
           ..write('type: $type, ')
+          ..write('author: $author, ')
           ..write('note: $note, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
@@ -1581,7 +1618,7 @@ class Feedback extends DataClass implements Insertable<Feedback> {
   }
 
   @override
-  int get hashCode => Object.hash(id, artworkId, type, note, createdAt);
+  int get hashCode => Object.hash(id, artworkId, type, author, note, createdAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1589,6 +1626,7 @@ class Feedback extends DataClass implements Insertable<Feedback> {
           other.id == this.id &&
           other.artworkId == this.artworkId &&
           other.type == this.type &&
+          other.author == this.author &&
           other.note == this.note &&
           other.createdAt == this.createdAt);
 }
@@ -1597,12 +1635,14 @@ class FeedbacksCompanion extends UpdateCompanion<Feedback> {
   final Value<int> id;
   final Value<int> artworkId;
   final Value<String> type;
+  final Value<String> author;
   final Value<String> note;
   final Value<DateTime> createdAt;
   const FeedbacksCompanion({
     this.id = const Value.absent(),
     this.artworkId = const Value.absent(),
     this.type = const Value.absent(),
+    this.author = const Value.absent(),
     this.note = const Value.absent(),
     this.createdAt = const Value.absent(),
   });
@@ -1610,6 +1650,7 @@ class FeedbacksCompanion extends UpdateCompanion<Feedback> {
     this.id = const Value.absent(),
     required int artworkId,
     required String type,
+    this.author = const Value.absent(),
     required String note,
     this.createdAt = const Value.absent(),
   }) : artworkId = Value(artworkId),
@@ -1619,6 +1660,7 @@ class FeedbacksCompanion extends UpdateCompanion<Feedback> {
     Expression<int>? id,
     Expression<int>? artworkId,
     Expression<String>? type,
+    Expression<String>? author,
     Expression<String>? note,
     Expression<DateTime>? createdAt,
   }) {
@@ -1626,6 +1668,7 @@ class FeedbacksCompanion extends UpdateCompanion<Feedback> {
       if (id != null) 'id': id,
       if (artworkId != null) 'artwork_id': artworkId,
       if (type != null) 'type': type,
+      if (author != null) 'author': author,
       if (note != null) 'note': note,
       if (createdAt != null) 'created_at': createdAt,
     });
@@ -1635,6 +1678,7 @@ class FeedbacksCompanion extends UpdateCompanion<Feedback> {
     Value<int>? id,
     Value<int>? artworkId,
     Value<String>? type,
+    Value<String>? author,
     Value<String>? note,
     Value<DateTime>? createdAt,
   }) {
@@ -1642,6 +1686,7 @@ class FeedbacksCompanion extends UpdateCompanion<Feedback> {
       id: id ?? this.id,
       artworkId: artworkId ?? this.artworkId,
       type: type ?? this.type,
+      author: author ?? this.author,
       note: note ?? this.note,
       createdAt: createdAt ?? this.createdAt,
     );
@@ -1659,6 +1704,9 @@ class FeedbacksCompanion extends UpdateCompanion<Feedback> {
     if (type.present) {
       map['type'] = Variable<String>(type.value);
     }
+    if (author.present) {
+      map['author'] = Variable<String>(author.value);
+    }
     if (note.present) {
       map['note'] = Variable<String>(note.value);
     }
@@ -1674,6 +1722,7 @@ class FeedbacksCompanion extends UpdateCompanion<Feedback> {
           ..write('id: $id, ')
           ..write('artworkId: $artworkId, ')
           ..write('type: $type, ')
+          ..write('author: $author, ')
           ..write('note: $note, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
@@ -4463,6 +4512,7 @@ typedef $$FeedbacksTableCreateCompanionBuilder = FeedbacksCompanion Function({
   Value<int> id,
   required int artworkId,
   required String type,
+  Value<String> author,
   required String note,
   Value<DateTime> createdAt,
 });
@@ -4470,6 +4520,7 @@ typedef $$FeedbacksTableUpdateCompanionBuilder = FeedbacksCompanion Function({
   Value<int> id,
   Value<int> artworkId,
   Value<String> type,
+  Value<String> author,
   Value<String> note,
   Value<DateTime> createdAt,
 });
@@ -4512,6 +4563,11 @@ class $$FeedbacksTableFilterComposer
 
   ColumnFilters<String> get type => $composableBuilder(
     column: $table.type,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get author => $composableBuilder(
+    column: $table.author,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -4568,6 +4624,11 @@ class $$FeedbacksTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get author => $composableBuilder(
+    column: $table.author,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get note => $composableBuilder(
     column: $table.note,
     builder: (column) => ColumnOrderings(column),
@@ -4616,6 +4677,9 @@ class $$FeedbacksTableAnnotationComposer
 
   GeneratedColumn<String> get type =>
       $composableBuilder(column: $table.type, builder: (column) => column);
+
+  GeneratedColumn<String> get author =>
+      $composableBuilder(column: $table.author, builder: (column) => column);
 
   GeneratedColumn<String> get note =>
       $composableBuilder(column: $table.note, builder: (column) => column);
@@ -4678,12 +4742,14 @@ class $$FeedbacksTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<int> artworkId = const Value.absent(),
                 Value<String> type = const Value.absent(),
+                Value<String> author = const Value.absent(),
                 Value<String> note = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
               }) => FeedbacksCompanion(
                 id: id,
                 artworkId: artworkId,
                 type: type,
+                author: author,
                 note: note,
                 createdAt: createdAt,
               ),
@@ -4692,12 +4758,14 @@ class $$FeedbacksTableTableManager
                 Value<int> id = const Value.absent(),
                 required int artworkId,
                 required String type,
+                Value<String> author = const Value.absent(),
                 required String note,
                 Value<DateTime> createdAt = const Value.absent(),
               }) => FeedbacksCompanion.insert(
                 id: id,
                 artworkId: artworkId,
                 type: type,
+                author: author,
                 note: note,
                 createdAt: createdAt,
               ),

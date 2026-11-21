@@ -54,54 +54,72 @@ class ArtworkDetailPage extends ConsumerWidget {
     int artworkId,
   ) async {
     final controller = TextEditingController();
+    var isSaving = false;
 
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       builder: (sheetContext) {
-        return Padding(
-          padding: EdgeInsets.only(
-            left: 16,
-            right: 16,
-            top: 16,
-            bottom: MediaQuery.of(sheetContext).viewInsets.bottom + 16,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Text(
-                'Add Brush',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        return StatefulBuilder(
+          builder: (stateContext, setModalState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                left: 16,
+                right: 16,
+                top: 16,
+                bottom: MediaQuery.of(sheetContext).viewInsets.bottom + 16,
               ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: controller,
-                autofocus: true,
-                textCapitalization: TextCapitalization.words,
-                decoration: const InputDecoration(
-                  labelText: 'Brush name',
-                  hintText: 'e.g. Round Watercolor, Soft Airbrush',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 12),
-              FilledButton(
-                onPressed: () async {
-                  final name = controller.text.trim();
-                  if (name.isEmpty) return;
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Text(
+                    'Add Brush',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: controller,
+                    autofocus: true,
+                    enabled: !isSaving,
+                    textCapitalization: TextCapitalization.words,
+                    decoration: const InputDecoration(
+                      labelText: 'Brush name',
+                      hintText: 'e.g. Round Watercolor, Soft Airbrush',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  FilledButton(
+                    onPressed: isSaving
+                        ? null
+                        : () async {
+                            final name = controller.text.trim();
+                            if (name.isEmpty) return;
+                            setModalState(() => isSaving = true);
 
-                  await ref
-                      .read(artworkRepoProvider)
-                      .addBrushToArtwork(artworkId: artworkId, brushName: name);
-                  if (sheetContext.mounted) {
-                    Navigator.of(sheetContext).pop();
-                  }
-                },
-                child: const Text('Save'),
+                            await ref
+                                .read(artworkRepoProvider)
+                                .addBrushToArtwork(
+                                  artworkId: artworkId,
+                                  brushName: name,
+                                );
+                            if (sheetContext.mounted) {
+                              Navigator.of(sheetContext).pop();
+                            }
+                          },
+                    child: isSaving
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Text('Save'),
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         );
       },
     );
@@ -116,70 +134,86 @@ class ArtworkDetailPage extends ConsumerWidget {
   ) async {
     final labelController = TextEditingController();
     final urlOrPathController = TextEditingController();
+    var isSaving = false;
 
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       builder: (sheetContext) {
-        return Padding(
-          padding: EdgeInsets.only(
-            left: 16,
-            right: 16,
-            top: 16,
-            bottom: MediaQuery.of(sheetContext).viewInsets.bottom + 16,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Text(
-                'Add Reference',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        return StatefulBuilder(
+          builder: (stateContext, setModalState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                left: 16,
+                right: 16,
+                top: 16,
+                bottom: MediaQuery.of(sheetContext).viewInsets.bottom + 16,
               ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: labelController,
-                autofocus: true,
-                textCapitalization: TextCapitalization.sentences,
-                decoration: const InputDecoration(
-                  labelText: 'Label',
-                  hintText: 'e.g. Lighting study, Pose reference',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: urlOrPathController,
-                decoration: const InputDecoration(
-                  labelText: 'URL or local path',
-                  hintText: 'https://... or /path/to/reference.jpg',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 12),
-              FilledButton(
-                onPressed: () async {
-                  final label = labelController.text.trim();
-                  final urlOrPath = urlOrPathController.text.trim();
-                  if (label.isEmpty || urlOrPath.isEmpty) return;
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Text(
+                    'Add Reference',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: labelController,
+                    autofocus: true,
+                    enabled: !isSaving,
+                    textCapitalization: TextCapitalization.sentences,
+                    decoration: const InputDecoration(
+                      labelText: 'Label',
+                      hintText: 'e.g. Lighting study, Pose reference',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: urlOrPathController,
+                    enabled: !isSaving,
+                    decoration: const InputDecoration(
+                      labelText: 'URL or local path',
+                      hintText: 'https://... or /path/to/reference.jpg',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  FilledButton(
+                    onPressed: isSaving
+                        ? null
+                        : () async {
+                            final label = labelController.text.trim();
+                            final urlOrPath = urlOrPathController.text.trim();
+                            if (label.isEmpty || urlOrPath.isEmpty) return;
+                            setModalState(() => isSaving = true);
 
-                  await ref
-                      .read(artworkRepoProvider)
-                      .addReference(
-                        ReferencesCompanion.insert(
-                          artworkId: artworkId,
-                          label: label,
-                          urlOrPath: urlOrPath,
-                        ),
-                      );
-                  if (sheetContext.mounted) {
-                    Navigator.of(sheetContext).pop();
-                  }
-                },
-                child: const Text('Save'),
+                            await ref
+                                .read(artworkRepoProvider)
+                                .addReference(
+                                  ReferencesCompanion.insert(
+                                    artworkId: artworkId,
+                                    label: label,
+                                    urlOrPath: urlOrPath,
+                                  ),
+                                );
+                            if (sheetContext.mounted) {
+                              Navigator.of(sheetContext).pop();
+                            }
+                          },
+                    child: isSaving
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Text('Save'),
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         );
       },
     );
@@ -193,8 +227,10 @@ class ArtworkDetailPage extends ConsumerWidget {
     WidgetRef ref,
     int artworkId,
   ) async {
+    final authorController = TextEditingController();
     final noteController = TextEditingController();
     String selectedType = 'critique';
+    var isSaving = false;
 
     await showModalBottomSheet<void>(
       context: context,
@@ -219,7 +255,7 @@ class ArtworkDetailPage extends ConsumerWidget {
                   ),
                   const SizedBox(height: 12),
                   DropdownButtonFormField<String>(
-                    value: selectedType,
+                    initialValue: selectedType,
                     decoration: const InputDecoration(
                       labelText: 'Type',
                       border: OutlineInputBorder(),
@@ -239,9 +275,21 @@ class ArtworkDetailPage extends ConsumerWidget {
                   ),
                   const SizedBox(height: 12),
                   TextField(
+                    controller: authorController,
+                    textCapitalization: TextCapitalization.words,
+                    enabled: !isSaving,
+                    decoration: const InputDecoration(
+                      labelText: 'Author',
+                      hintText: 'Name or username',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
                     controller: noteController,
                     autofocus: true,
                     maxLines: 3,
+                    enabled: !isSaving,
                     textCapitalization: TextCapitalization.sentences,
                     decoration: const InputDecoration(
                       labelText: 'Note',
@@ -251,24 +299,34 @@ class ArtworkDetailPage extends ConsumerWidget {
                   ),
                   const SizedBox(height: 12),
                   FilledButton(
-                    onPressed: () async {
-                      final note = noteController.text.trim();
-                      if (note.isEmpty) return;
+                    onPressed: isSaving
+                        ? null
+                        : () async {
+                            final note = noteController.text.trim();
+                            if (note.isEmpty) return;
+                            setModalState(() => isSaving = true);
 
-                      await ref
-                          .read(artworkRepoProvider)
-                          .addFeedback(
-                            FeedbacksCompanion.insert(
-                              artworkId: artworkId,
-                              type: selectedType,
-                              note: note,
-                            ),
-                          );
-                      if (sheetContext.mounted) {
-                        Navigator.of(sheetContext).pop();
-                      }
-                    },
-                    child: const Text('Save'),
+                            await ref
+                                .read(artworkRepoProvider)
+                                .addFeedback(
+                                  FeedbacksCompanion.insert(
+                                    artworkId: artworkId,
+                                    type: selectedType,
+                                    author: Value(authorController.text.trim()),
+                                    note: note,
+                                  ),
+                                );
+                            if (sheetContext.mounted) {
+                              Navigator.of(sheetContext).pop();
+                            }
+                          },
+                    child: isSaving
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Text('Save'),
                   ),
                 ],
               ),
@@ -278,6 +336,7 @@ class ArtworkDetailPage extends ConsumerWidget {
       },
     );
 
+    authorController.dispose();
     noteController.dispose();
   }
 
@@ -306,6 +365,7 @@ class ArtworkDetailPage extends ConsumerWidget {
     final savingsController = TextEditingController(
       text: post?.savings.toString() ?? '0',
     );
+    var isSaving = false;
 
     int parseMetric(TextEditingController controller) =>
         int.tryParse(controller.text.trim()) ?? 0;
@@ -314,136 +374,161 @@ class ArtworkDetailPage extends ConsumerWidget {
       context: context,
       isScrollControlled: true,
       builder: (sheetContext) {
-        return Padding(
-          padding: EdgeInsets.only(
-            left: 16,
-            right: 16,
-            top: 16,
-            bottom: MediaQuery.of(sheetContext).viewInsets.bottom + 16,
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  post == null ? 'Add Post' : 'Edit Post',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: platformController,
-                  autofocus: true,
-                  textCapitalization: TextCapitalization.words,
-                  decoration: const InputDecoration(
-                    labelText: 'Platform',
-                    hintText: 'Instagram, ArtStation, DeviantArt...',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: urlController,
-                  keyboardType: TextInputType.url,
-                  decoration: const InputDecoration(
-                    labelText: 'URL',
-                    hintText: 'https://...',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: likesController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    labelText: 'Likes',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: viewsController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    labelText: 'Views',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: sharesController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    labelText: 'Shares',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: upvotesController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    labelText: 'Upvotes',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: savingsController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    labelText: 'Savings',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                FilledButton(
-                  onPressed: () async {
-                    final platform = platformController.text.trim();
-                    final url = urlController.text.trim();
-                    if (platform.isEmpty || url.isEmpty) return;
+        return StatefulBuilder(
+          builder: (stateContext, setModalState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                left: 16,
+                right: 16,
+                top: 16,
+                bottom: MediaQuery.of(sheetContext).viewInsets.bottom + 16,
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      post == null ? 'Add Post' : 'Edit Post',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextFormField(
+                      controller: platformController,
+                      autofocus: true,
+                      textCapitalization: TextCapitalization.words,
+                      decoration: const InputDecoration(
+                        labelText: 'Platform',
+                        hintText: 'Instagram, ArtStation, DeviantArt...',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextFormField(
+                      controller: urlController,
+                      keyboardType: TextInputType.url,
+                      decoration: const InputDecoration(
+                        labelText: 'URL',
+                        hintText: 'https://...',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextFormField(
+                      controller: likesController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        labelText: 'Likes',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextFormField(
+                      controller: viewsController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        labelText: 'Views',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextFormField(
+                      controller: sharesController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        labelText: 'Shares',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextFormField(
+                      controller: upvotesController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        labelText: 'Upvotes',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextFormField(
+                      controller: savingsController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        labelText: 'Savings',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    FilledButton(
+                      onPressed: isSaving
+                          ? null
+                          : () async {
+                              final platform = platformController.text.trim();
+                              final url = urlController.text.trim();
+                              if (platform.isEmpty || url.isEmpty) return;
+                              setModalState(() => isSaving = true);
 
-                    final repository = ref.read(artworkRepoProvider);
-                    if (post == null) {
-                      await repository.addPost(
-                        PostsCompanion.insert(
-                          artworkId: artworkId,
-                          platform: platform,
-                          url: url,
-                          likes: Value(parseMetric(likesController)),
-                          views: Value(parseMetric(viewsController)),
-                          shares: Value(parseMetric(sharesController)),
-                          upvotes: Value(parseMetric(upvotesController)),
-                          savings: Value(parseMetric(savingsController)),
-                        ),
-                      );
-                    } else {
-                      await repository.updatePost(
-                        PostsCompanion(
-                          id: Value(post.id),
-                          artworkId: Value(artworkId),
-                          platform: Value(platform),
-                          url: Value(url),
-                          likes: Value(parseMetric(likesController)),
-                          views: Value(parseMetric(viewsController)),
-                          shares: Value(parseMetric(sharesController)),
-                          upvotes: Value(parseMetric(upvotesController)),
-                          savings: Value(parseMetric(savingsController)),
-                        ),
-                      );
-                    }
-                    if (sheetContext.mounted) {
-                      Navigator.of(sheetContext).pop();
-                    }
-                  },
-                  child: Text(post == null ? 'Add Post' : 'Save Changes'),
+                              final repository = ref.read(artworkRepoProvider);
+                              if (post == null) {
+                                await repository.addPost(
+                                  PostsCompanion.insert(
+                                    artworkId: artworkId,
+                                    platform: platform,
+                                    url: url,
+                                    likes: Value(parseMetric(likesController)),
+                                    views: Value(parseMetric(viewsController)),
+                                    shares: Value(
+                                      parseMetric(sharesController),
+                                    ),
+                                    upvotes: Value(
+                                      parseMetric(upvotesController),
+                                    ),
+                                    savings: Value(
+                                      parseMetric(savingsController),
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                await repository.updatePost(
+                                  PostsCompanion(
+                                    id: Value(post.id),
+                                    artworkId: Value(artworkId),
+                                    platform: Value(platform),
+                                    url: Value(url),
+                                    likes: Value(parseMetric(likesController)),
+                                    views: Value(parseMetric(viewsController)),
+                                    shares: Value(
+                                      parseMetric(sharesController),
+                                    ),
+                                    upvotes: Value(
+                                      parseMetric(upvotesController),
+                                    ),
+                                    savings: Value(
+                                      parseMetric(savingsController),
+                                    ),
+                                  ),
+                                );
+                              }
+                              if (sheetContext.mounted) {
+                                Navigator.of(sheetContext).pop();
+                              }
+                            },
+                      child: isSaving
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : Text(post == null ? 'Add Post' : 'Save Changes'),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         );
       },
     );
@@ -666,7 +751,11 @@ class ArtworkDetailPage extends ConsumerWidget {
                           return ListTile(
                             contentPadding: EdgeInsets.zero,
                             title: Text(feedback.note),
-                            subtitle: Text(feedback.type),
+                            subtitle: Text(
+                              feedback.author.isEmpty
+                                  ? feedback.type
+                                  : '${feedback.type} - ${feedback.author}',
+                            ),
                             trailing: IconButton(
                               icon: const Icon(Icons.delete_outline),
                               onPressed: () =>
