@@ -1,19 +1,18 @@
 import 'dart:io';
 
+import 'package:drift/drift.dart' show Value;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart' hide Feedback;
 import 'package:sketchtrail/data/database.dart';
 import 'package:sketchtrail/pages/artwork_form_page.dart';
 import 'package:sketchtrail/providers/providers.dart';
 import 'package:sketchtrail/services/file_service.dart';
+import 'package:sketchtrail/widgets/post_tile.dart';
 
 class ArtworkDetailPage extends ConsumerWidget {
   final Artwork artwork;
 
-  const ArtworkDetailPage({
-    super.key,
-    required this.artwork,
-  });
+  const ArtworkDetailPage({super.key, required this.artwork});
 
   Future<void> _confirmAndDelete(BuildContext context, WidgetRef ref) async {
     final shouldDelete = await showDialog<bool>(
@@ -92,10 +91,9 @@ class ArtworkDetailPage extends ConsumerWidget {
                   final name = controller.text.trim();
                   if (name.isEmpty) return;
 
-                  await ref.read(artworkRepoProvider).addBrushToArtwork(
-                        artworkId: artworkId,
-                        brushName: name,
-                      );
+                  await ref
+                      .read(artworkRepoProvider)
+                      .addBrushToArtwork(artworkId: artworkId, brushName: name);
                   if (sheetContext.mounted) {
                     Navigator.of(sheetContext).pop();
                   }
@@ -165,7 +163,9 @@ class ArtworkDetailPage extends ConsumerWidget {
                   final urlOrPath = urlOrPathController.text.trim();
                   if (label.isEmpty || urlOrPath.isEmpty) return;
 
-                  await ref.read(artworkRepoProvider).addReference(
+                  await ref
+                      .read(artworkRepoProvider)
+                      .addReference(
                         ReferencesCompanion.insert(
                           artworkId: artworkId,
                           label: label,
@@ -225,7 +225,10 @@ class ArtworkDetailPage extends ConsumerWidget {
                       border: OutlineInputBorder(),
                     ),
                     items: const [
-                      DropdownMenuItem(value: 'critique', child: Text('Critique')),
+                      DropdownMenuItem(
+                        value: 'critique',
+                        child: Text('Critique'),
+                      ),
                       DropdownMenuItem(value: 'note', child: Text('Note')),
                       DropdownMenuItem(value: 'praise', child: Text('Praise')),
                     ],
@@ -252,7 +255,9 @@ class ArtworkDetailPage extends ConsumerWidget {
                       final note = noteController.text.trim();
                       if (note.isEmpty) return;
 
-                      await ref.read(artworkRepoProvider).addFeedback(
+                      await ref
+                          .read(artworkRepoProvider)
+                          .addFeedback(
                             FeedbacksCompanion.insert(
                               artworkId: artworkId,
                               type: selectedType,
@@ -274,6 +279,182 @@ class ArtworkDetailPage extends ConsumerWidget {
     );
 
     noteController.dispose();
+  }
+
+  Future<void> _showPostSheet(
+    BuildContext context,
+    WidgetRef ref,
+    int artworkId, {
+    Post? post,
+  }) async {
+    final platformController = TextEditingController(
+      text: post?.platform ?? '',
+    );
+    final urlController = TextEditingController(text: post?.url ?? '');
+    final likesController = TextEditingController(
+      text: post?.likes.toString() ?? '0',
+    );
+    final viewsController = TextEditingController(
+      text: post?.views.toString() ?? '0',
+    );
+    final sharesController = TextEditingController(
+      text: post?.shares.toString() ?? '0',
+    );
+    final upvotesController = TextEditingController(
+      text: post?.upvotes.toString() ?? '0',
+    );
+    final savingsController = TextEditingController(
+      text: post?.savings.toString() ?? '0',
+    );
+
+    int parseMetric(TextEditingController controller) =>
+        int.tryParse(controller.text.trim()) ?? 0;
+
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (sheetContext) {
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 16,
+            right: 16,
+            top: 16,
+            bottom: MediaQuery.of(sheetContext).viewInsets.bottom + 16,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  post == null ? 'Add Post' : 'Edit Post',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: platformController,
+                  autofocus: true,
+                  textCapitalization: TextCapitalization.words,
+                  decoration: const InputDecoration(
+                    labelText: 'Platform',
+                    hintText: 'Instagram, ArtStation, DeviantArt...',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: urlController,
+                  keyboardType: TextInputType.url,
+                  decoration: const InputDecoration(
+                    labelText: 'URL',
+                    hintText: 'https://...',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: likesController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    labelText: 'Likes',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: viewsController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    labelText: 'Views',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: sharesController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    labelText: 'Shares',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: upvotesController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    labelText: 'Upvotes',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: savingsController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    labelText: 'Savings',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                FilledButton(
+                  onPressed: () async {
+                    final platform = platformController.text.trim();
+                    final url = urlController.text.trim();
+                    if (platform.isEmpty || url.isEmpty) return;
+
+                    final repository = ref.read(artworkRepoProvider);
+                    if (post == null) {
+                      await repository.addPost(
+                        PostsCompanion.insert(
+                          artworkId: artworkId,
+                          platform: platform,
+                          url: url,
+                          likes: Value(parseMetric(likesController)),
+                          views: Value(parseMetric(viewsController)),
+                          shares: Value(parseMetric(sharesController)),
+                          upvotes: Value(parseMetric(upvotesController)),
+                          savings: Value(parseMetric(savingsController)),
+                        ),
+                      );
+                    } else {
+                      await repository.updatePost(
+                        PostsCompanion(
+                          id: Value(post.id),
+                          artworkId: Value(artworkId),
+                          platform: Value(platform),
+                          url: Value(url),
+                          likes: Value(parseMetric(likesController)),
+                          views: Value(parseMetric(viewsController)),
+                          shares: Value(parseMetric(sharesController)),
+                          upvotes: Value(parseMetric(upvotesController)),
+                          savings: Value(parseMetric(savingsController)),
+                        ),
+                      );
+                    }
+                    if (sheetContext.mounted) {
+                      Navigator.of(sheetContext).pop();
+                    }
+                  },
+                  child: Text(post == null ? 'Add Post' : 'Save Changes'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+
+    platformController.dispose();
+    urlController.dispose();
+    likesController.dispose();
+    viewsController.dispose();
+    sharesController.dispose();
+    upvotesController.dispose();
+    savingsController.dispose();
   }
 
   @override
@@ -330,7 +511,10 @@ class ArtworkDetailPage extends ConsumerWidget {
             Text('Title', style: Theme.of(context).textTheme.labelLarge),
             Text(artwork.title),
             const SizedBox(height: 12),
-            Text('Software Used', style: Theme.of(context).textTheme.labelLarge),
+            Text(
+              'Software Used',
+              style: Theme.of(context).textTheme.labelLarge,
+            ),
             Text(artwork.softwareUsed),
             const SizedBox(height: 12),
             Text('Created At', style: Theme.of(context).textTheme.labelLarge),
@@ -374,9 +558,9 @@ class ArtworkDetailPage extends ConsumerWidget {
                                 label: Text(brush.name),
                                 onDeleted: () =>
                                     repository.removeBrushFromArtwork(
-                                  artworkId: artwork.id,
-                                  brushId: brush.id,
-                                ),
+                                      artworkId: artwork.id,
+                                      brushId: brush.id,
+                                    ),
                               ),
                             )
                             .toList(),
@@ -491,6 +675,61 @@ class ArtworkDetailPage extends ConsumerWidget {
                           );
                         },
                       ),
+                    const SizedBox(height: 20),
+                    StreamBuilder<List<Post>>(
+                      stream: repository.watchPostsForArtwork(artwork.id),
+                      builder: (context, snapshot) {
+                        final posts = snapshot.data ?? const <Post>[];
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  'Posts',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                TextButton.icon(
+                                  onPressed: () =>
+                                      _showPostSheet(context, ref, artwork.id),
+                                  icon: const Icon(Icons.add),
+                                  label: const Text('Add Post'),
+                                ),
+                              ],
+                            ),
+                            if (posts.isEmpty)
+                              const Text('No posts added yet.')
+                            else
+                              ListView.separated(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: posts.length,
+                                separatorBuilder: (context, index) =>
+                                    const SizedBox(height: 8),
+                                itemBuilder: (context, index) {
+                                  final post = posts[index];
+                                  return PostTile(
+                                    post: post,
+                                    onEdit: () => _showPostSheet(
+                                      context,
+                                      ref,
+                                      artwork.id,
+                                      post: post,
+                                    ),
+                                    onDelete: () =>
+                                        repository.removePost(post.id),
+                                  );
+                                },
+                              ),
+                          ],
+                        );
+                      },
+                    ),
                   ],
                 );
               },

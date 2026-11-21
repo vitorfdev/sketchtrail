@@ -1681,6 +1681,1168 @@ class FeedbacksCompanion extends UpdateCompanion<Feedback> {
   }
 }
 
+class $PostsTable extends Posts with TableInfo<$PostsTable, Post> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PostsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _artworkIdMeta = const VerificationMeta(
+    'artworkId',
+  );
+  @override
+  late final GeneratedColumn<int> artworkId = GeneratedColumn<int>(
+    'artwork_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES artworks (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _platformMeta = const VerificationMeta(
+    'platform',
+  );
+  @override
+  late final GeneratedColumn<String> platform = GeneratedColumn<String>(
+    'platform',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _urlMeta = const VerificationMeta('url');
+  @override
+  late final GeneratedColumn<String> url = GeneratedColumn<String>(
+    'url',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _likesMeta = const VerificationMeta('likes');
+  @override
+  late final GeneratedColumn<int> likes = GeneratedColumn<int>(
+    'likes',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _viewsMeta = const VerificationMeta('views');
+  @override
+  late final GeneratedColumn<int> views = GeneratedColumn<int>(
+    'views',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _sharesMeta = const VerificationMeta('shares');
+  @override
+  late final GeneratedColumn<int> shares = GeneratedColumn<int>(
+    'shares',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _upvotesMeta = const VerificationMeta(
+    'upvotes',
+  );
+  @override
+  late final GeneratedColumn<int> upvotes = GeneratedColumn<int>(
+    'upvotes',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _savingsMeta = const VerificationMeta(
+    'savings',
+  );
+  @override
+  late final GeneratedColumn<int> savings = GeneratedColumn<int>(
+    'savings',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    artworkId,
+    platform,
+    url,
+    likes,
+    views,
+    shares,
+    upvotes,
+    savings,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'posts';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Post> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('artwork_id')) {
+      context.handle(
+        _artworkIdMeta,
+        artworkId.isAcceptableOrUnknown(data['artwork_id']!, _artworkIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_artworkIdMeta);
+    }
+    if (data.containsKey('platform')) {
+      context.handle(
+        _platformMeta,
+        platform.isAcceptableOrUnknown(data['platform']!, _platformMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_platformMeta);
+    }
+    if (data.containsKey('url')) {
+      context.handle(
+        _urlMeta,
+        url.isAcceptableOrUnknown(data['url']!, _urlMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_urlMeta);
+    }
+    if (data.containsKey('likes')) {
+      context.handle(
+        _likesMeta,
+        likes.isAcceptableOrUnknown(data['likes']!, _likesMeta),
+      );
+    }
+    if (data.containsKey('views')) {
+      context.handle(
+        _viewsMeta,
+        views.isAcceptableOrUnknown(data['views']!, _viewsMeta),
+      );
+    }
+    if (data.containsKey('shares')) {
+      context.handle(
+        _sharesMeta,
+        shares.isAcceptableOrUnknown(data['shares']!, _sharesMeta),
+      );
+    }
+    if (data.containsKey('upvotes')) {
+      context.handle(
+        _upvotesMeta,
+        upvotes.isAcceptableOrUnknown(data['upvotes']!, _upvotesMeta),
+      );
+    }
+    if (data.containsKey('savings')) {
+      context.handle(
+        _savingsMeta,
+        savings.isAcceptableOrUnknown(data['savings']!, _savingsMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Post map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Post(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      artworkId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}artwork_id'],
+      )!,
+      platform: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}platform'],
+      )!,
+      url: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}url'],
+      )!,
+      likes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}likes'],
+      )!,
+      views: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}views'],
+      )!,
+      shares: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}shares'],
+      )!,
+      upvotes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}upvotes'],
+      )!,
+      savings: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}savings'],
+      )!,
+    );
+  }
+
+  @override
+  $PostsTable createAlias(String alias) {
+    return $PostsTable(attachedDatabase, alias);
+  }
+}
+
+class Post extends DataClass implements Insertable<Post> {
+  final int id;
+  final int artworkId;
+  final String platform;
+  final String url;
+  final int likes;
+  final int views;
+  final int shares;
+  final int upvotes;
+  final int savings;
+  const Post({
+    required this.id,
+    required this.artworkId,
+    required this.platform,
+    required this.url,
+    required this.likes,
+    required this.views,
+    required this.shares,
+    required this.upvotes,
+    required this.savings,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['artwork_id'] = Variable<int>(artworkId);
+    map['platform'] = Variable<String>(platform);
+    map['url'] = Variable<String>(url);
+    map['likes'] = Variable<int>(likes);
+    map['views'] = Variable<int>(views);
+    map['shares'] = Variable<int>(shares);
+    map['upvotes'] = Variable<int>(upvotes);
+    map['savings'] = Variable<int>(savings);
+    return map;
+  }
+
+  PostsCompanion toCompanion(bool nullToAbsent) {
+    return PostsCompanion(
+      id: Value(id),
+      artworkId: Value(artworkId),
+      platform: Value(platform),
+      url: Value(url),
+      likes: Value(likes),
+      views: Value(views),
+      shares: Value(shares),
+      upvotes: Value(upvotes),
+      savings: Value(savings),
+    );
+  }
+
+  factory Post.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Post(
+      id: serializer.fromJson<int>(json['id']),
+      artworkId: serializer.fromJson<int>(json['artworkId']),
+      platform: serializer.fromJson<String>(json['platform']),
+      url: serializer.fromJson<String>(json['url']),
+      likes: serializer.fromJson<int>(json['likes']),
+      views: serializer.fromJson<int>(json['views']),
+      shares: serializer.fromJson<int>(json['shares']),
+      upvotes: serializer.fromJson<int>(json['upvotes']),
+      savings: serializer.fromJson<int>(json['savings']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'artworkId': serializer.toJson<int>(artworkId),
+      'platform': serializer.toJson<String>(platform),
+      'url': serializer.toJson<String>(url),
+      'likes': serializer.toJson<int>(likes),
+      'views': serializer.toJson<int>(views),
+      'shares': serializer.toJson<int>(shares),
+      'upvotes': serializer.toJson<int>(upvotes),
+      'savings': serializer.toJson<int>(savings),
+    };
+  }
+
+  Post copyWith({
+    int? id,
+    int? artworkId,
+    String? platform,
+    String? url,
+    int? likes,
+    int? views,
+    int? shares,
+    int? upvotes,
+    int? savings,
+  }) => Post(
+    id: id ?? this.id,
+    artworkId: artworkId ?? this.artworkId,
+    platform: platform ?? this.platform,
+    url: url ?? this.url,
+    likes: likes ?? this.likes,
+    views: views ?? this.views,
+    shares: shares ?? this.shares,
+    upvotes: upvotes ?? this.upvotes,
+    savings: savings ?? this.savings,
+  );
+  Post copyWithCompanion(PostsCompanion data) {
+    return Post(
+      id: data.id.present ? data.id.value : this.id,
+      artworkId: data.artworkId.present ? data.artworkId.value : this.artworkId,
+      platform: data.platform.present ? data.platform.value : this.platform,
+      url: data.url.present ? data.url.value : this.url,
+      likes: data.likes.present ? data.likes.value : this.likes,
+      views: data.views.present ? data.views.value : this.views,
+      shares: data.shares.present ? data.shares.value : this.shares,
+      upvotes: data.upvotes.present ? data.upvotes.value : this.upvotes,
+      savings: data.savings.present ? data.savings.value : this.savings,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Post(')
+          ..write('id: $id, ')
+          ..write('artworkId: $artworkId, ')
+          ..write('platform: $platform, ')
+          ..write('url: $url, ')
+          ..write('likes: $likes, ')
+          ..write('views: $views, ')
+          ..write('shares: $shares, ')
+          ..write('upvotes: $upvotes, ')
+          ..write('savings: $savings')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    artworkId,
+    platform,
+    url,
+    likes,
+    views,
+    shares,
+    upvotes,
+    savings,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Post &&
+          other.id == this.id &&
+          other.artworkId == this.artworkId &&
+          other.platform == this.platform &&
+          other.url == this.url &&
+          other.likes == this.likes &&
+          other.views == this.views &&
+          other.shares == this.shares &&
+          other.upvotes == this.upvotes &&
+          other.savings == this.savings);
+}
+
+class PostsCompanion extends UpdateCompanion<Post> {
+  final Value<int> id;
+  final Value<int> artworkId;
+  final Value<String> platform;
+  final Value<String> url;
+  final Value<int> likes;
+  final Value<int> views;
+  final Value<int> shares;
+  final Value<int> upvotes;
+  final Value<int> savings;
+  const PostsCompanion({
+    this.id = const Value.absent(),
+    this.artworkId = const Value.absent(),
+    this.platform = const Value.absent(),
+    this.url = const Value.absent(),
+    this.likes = const Value.absent(),
+    this.views = const Value.absent(),
+    this.shares = const Value.absent(),
+    this.upvotes = const Value.absent(),
+    this.savings = const Value.absent(),
+  });
+  PostsCompanion.insert({
+    this.id = const Value.absent(),
+    required int artworkId,
+    required String platform,
+    required String url,
+    this.likes = const Value.absent(),
+    this.views = const Value.absent(),
+    this.shares = const Value.absent(),
+    this.upvotes = const Value.absent(),
+    this.savings = const Value.absent(),
+  }) : artworkId = Value(artworkId),
+       platform = Value(platform),
+       url = Value(url);
+  static Insertable<Post> custom({
+    Expression<int>? id,
+    Expression<int>? artworkId,
+    Expression<String>? platform,
+    Expression<String>? url,
+    Expression<int>? likes,
+    Expression<int>? views,
+    Expression<int>? shares,
+    Expression<int>? upvotes,
+    Expression<int>? savings,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (artworkId != null) 'artwork_id': artworkId,
+      if (platform != null) 'platform': platform,
+      if (url != null) 'url': url,
+      if (likes != null) 'likes': likes,
+      if (views != null) 'views': views,
+      if (shares != null) 'shares': shares,
+      if (upvotes != null) 'upvotes': upvotes,
+      if (savings != null) 'savings': savings,
+    });
+  }
+
+  PostsCompanion copyWith({
+    Value<int>? id,
+    Value<int>? artworkId,
+    Value<String>? platform,
+    Value<String>? url,
+    Value<int>? likes,
+    Value<int>? views,
+    Value<int>? shares,
+    Value<int>? upvotes,
+    Value<int>? savings,
+  }) {
+    return PostsCompanion(
+      id: id ?? this.id,
+      artworkId: artworkId ?? this.artworkId,
+      platform: platform ?? this.platform,
+      url: url ?? this.url,
+      likes: likes ?? this.likes,
+      views: views ?? this.views,
+      shares: shares ?? this.shares,
+      upvotes: upvotes ?? this.upvotes,
+      savings: savings ?? this.savings,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (artworkId.present) {
+      map['artwork_id'] = Variable<int>(artworkId.value);
+    }
+    if (platform.present) {
+      map['platform'] = Variable<String>(platform.value);
+    }
+    if (url.present) {
+      map['url'] = Variable<String>(url.value);
+    }
+    if (likes.present) {
+      map['likes'] = Variable<int>(likes.value);
+    }
+    if (views.present) {
+      map['views'] = Variable<int>(views.value);
+    }
+    if (shares.present) {
+      map['shares'] = Variable<int>(shares.value);
+    }
+    if (upvotes.present) {
+      map['upvotes'] = Variable<int>(upvotes.value);
+    }
+    if (savings.present) {
+      map['savings'] = Variable<int>(savings.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PostsCompanion(')
+          ..write('id: $id, ')
+          ..write('artworkId: $artworkId, ')
+          ..write('platform: $platform, ')
+          ..write('url: $url, ')
+          ..write('likes: $likes, ')
+          ..write('views: $views, ')
+          ..write('shares: $shares, ')
+          ..write('upvotes: $upvotes, ')
+          ..write('savings: $savings')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TasksTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _taskDateMeta = const VerificationMeta(
+    'taskDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> taskDate = GeneratedColumn<DateTime>(
+    'task_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _doneMeta = const VerificationMeta('done');
+  @override
+  late final GeneratedColumn<bool> done = GeneratedColumn<bool>(
+    'done',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("done" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, title, taskDate, done];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'tasks';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Task> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('task_date')) {
+      context.handle(
+        _taskDateMeta,
+        taskDate.isAcceptableOrUnknown(data['task_date']!, _taskDateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_taskDateMeta);
+    }
+    if (data.containsKey('done')) {
+      context.handle(
+        _doneMeta,
+        done.isAcceptableOrUnknown(data['done']!, _doneMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Task map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Task(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      taskDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}task_date'],
+      )!,
+      done: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}done'],
+      )!,
+    );
+  }
+
+  @override
+  $TasksTable createAlias(String alias) {
+    return $TasksTable(attachedDatabase, alias);
+  }
+}
+
+class Task extends DataClass implements Insertable<Task> {
+  final int id;
+  final String title;
+  final DateTime taskDate;
+  final bool done;
+  const Task({
+    required this.id,
+    required this.title,
+    required this.taskDate,
+    required this.done,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['title'] = Variable<String>(title);
+    map['task_date'] = Variable<DateTime>(taskDate);
+    map['done'] = Variable<bool>(done);
+    return map;
+  }
+
+  TasksCompanion toCompanion(bool nullToAbsent) {
+    return TasksCompanion(
+      id: Value(id),
+      title: Value(title),
+      taskDate: Value(taskDate),
+      done: Value(done),
+    );
+  }
+
+  factory Task.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Task(
+      id: serializer.fromJson<int>(json['id']),
+      title: serializer.fromJson<String>(json['title']),
+      taskDate: serializer.fromJson<DateTime>(json['taskDate']),
+      done: serializer.fromJson<bool>(json['done']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'title': serializer.toJson<String>(title),
+      'taskDate': serializer.toJson<DateTime>(taskDate),
+      'done': serializer.toJson<bool>(done),
+    };
+  }
+
+  Task copyWith({int? id, String? title, DateTime? taskDate, bool? done}) =>
+      Task(
+        id: id ?? this.id,
+        title: title ?? this.title,
+        taskDate: taskDate ?? this.taskDate,
+        done: done ?? this.done,
+      );
+  Task copyWithCompanion(TasksCompanion data) {
+    return Task(
+      id: data.id.present ? data.id.value : this.id,
+      title: data.title.present ? data.title.value : this.title,
+      taskDate: data.taskDate.present ? data.taskDate.value : this.taskDate,
+      done: data.done.present ? data.done.value : this.done,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Task(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('taskDate: $taskDate, ')
+          ..write('done: $done')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, title, taskDate, done);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Task &&
+          other.id == this.id &&
+          other.title == this.title &&
+          other.taskDate == this.taskDate &&
+          other.done == this.done);
+}
+
+class TasksCompanion extends UpdateCompanion<Task> {
+  final Value<int> id;
+  final Value<String> title;
+  final Value<DateTime> taskDate;
+  final Value<bool> done;
+  const TasksCompanion({
+    this.id = const Value.absent(),
+    this.title = const Value.absent(),
+    this.taskDate = const Value.absent(),
+    this.done = const Value.absent(),
+  });
+  TasksCompanion.insert({
+    this.id = const Value.absent(),
+    required String title,
+    required DateTime taskDate,
+    this.done = const Value.absent(),
+  }) : title = Value(title),
+       taskDate = Value(taskDate);
+  static Insertable<Task> custom({
+    Expression<int>? id,
+    Expression<String>? title,
+    Expression<DateTime>? taskDate,
+    Expression<bool>? done,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (title != null) 'title': title,
+      if (taskDate != null) 'task_date': taskDate,
+      if (done != null) 'done': done,
+    });
+  }
+
+  TasksCompanion copyWith({
+    Value<int>? id,
+    Value<String>? title,
+    Value<DateTime>? taskDate,
+    Value<bool>? done,
+  }) {
+    return TasksCompanion(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      taskDate: taskDate ?? this.taskDate,
+      done: done ?? this.done,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (taskDate.present) {
+      map['task_date'] = Variable<DateTime>(taskDate.value);
+    }
+    if (done.present) {
+      map['done'] = Variable<bool>(done.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TasksCompanion(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('taskDate: $taskDate, ')
+          ..write('done: $done')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $MaterialsTable extends Materials
+    with TableInfo<$MaterialsTable, Material> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MaterialsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  @override
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+    'type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _linkPathMeta = const VerificationMeta(
+    'linkPath',
+  );
+  @override
+  late final GeneratedColumn<String> linkPath = GeneratedColumn<String>(
+    'link_path',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('Not started'),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, title, type, linkPath, status];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'materials';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Material> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('type')) {
+      context.handle(
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_typeMeta);
+    }
+    if (data.containsKey('link_path')) {
+      context.handle(
+        _linkPathMeta,
+        linkPath.isAcceptableOrUnknown(data['link_path']!, _linkPathMeta),
+      );
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Material map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Material(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      type: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}type'],
+      )!,
+      linkPath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}link_path'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+    );
+  }
+
+  @override
+  $MaterialsTable createAlias(String alias) {
+    return $MaterialsTable(attachedDatabase, alias);
+  }
+}
+
+class Material extends DataClass implements Insertable<Material> {
+  final int id;
+  final String title;
+  final String type;
+  final String linkPath;
+  final String status;
+  const Material({
+    required this.id,
+    required this.title,
+    required this.type,
+    required this.linkPath,
+    required this.status,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['title'] = Variable<String>(title);
+    map['type'] = Variable<String>(type);
+    map['link_path'] = Variable<String>(linkPath);
+    map['status'] = Variable<String>(status);
+    return map;
+  }
+
+  MaterialsCompanion toCompanion(bool nullToAbsent) {
+    return MaterialsCompanion(
+      id: Value(id),
+      title: Value(title),
+      type: Value(type),
+      linkPath: Value(linkPath),
+      status: Value(status),
+    );
+  }
+
+  factory Material.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Material(
+      id: serializer.fromJson<int>(json['id']),
+      title: serializer.fromJson<String>(json['title']),
+      type: serializer.fromJson<String>(json['type']),
+      linkPath: serializer.fromJson<String>(json['linkPath']),
+      status: serializer.fromJson<String>(json['status']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'title': serializer.toJson<String>(title),
+      'type': serializer.toJson<String>(type),
+      'linkPath': serializer.toJson<String>(linkPath),
+      'status': serializer.toJson<String>(status),
+    };
+  }
+
+  Material copyWith({
+    int? id,
+    String? title,
+    String? type,
+    String? linkPath,
+    String? status,
+  }) => Material(
+    id: id ?? this.id,
+    title: title ?? this.title,
+    type: type ?? this.type,
+    linkPath: linkPath ?? this.linkPath,
+    status: status ?? this.status,
+  );
+  Material copyWithCompanion(MaterialsCompanion data) {
+    return Material(
+      id: data.id.present ? data.id.value : this.id,
+      title: data.title.present ? data.title.value : this.title,
+      type: data.type.present ? data.type.value : this.type,
+      linkPath: data.linkPath.present ? data.linkPath.value : this.linkPath,
+      status: data.status.present ? data.status.value : this.status,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Material(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('type: $type, ')
+          ..write('linkPath: $linkPath, ')
+          ..write('status: $status')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, title, type, linkPath, status);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Material &&
+          other.id == this.id &&
+          other.title == this.title &&
+          other.type == this.type &&
+          other.linkPath == this.linkPath &&
+          other.status == this.status);
+}
+
+class MaterialsCompanion extends UpdateCompanion<Material> {
+  final Value<int> id;
+  final Value<String> title;
+  final Value<String> type;
+  final Value<String> linkPath;
+  final Value<String> status;
+  const MaterialsCompanion({
+    this.id = const Value.absent(),
+    this.title = const Value.absent(),
+    this.type = const Value.absent(),
+    this.linkPath = const Value.absent(),
+    this.status = const Value.absent(),
+  });
+  MaterialsCompanion.insert({
+    this.id = const Value.absent(),
+    required String title,
+    required String type,
+    this.linkPath = const Value.absent(),
+    this.status = const Value.absent(),
+  }) : title = Value(title),
+       type = Value(type);
+  static Insertable<Material> custom({
+    Expression<int>? id,
+    Expression<String>? title,
+    Expression<String>? type,
+    Expression<String>? linkPath,
+    Expression<String>? status,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (title != null) 'title': title,
+      if (type != null) 'type': type,
+      if (linkPath != null) 'link_path': linkPath,
+      if (status != null) 'status': status,
+    });
+  }
+
+  MaterialsCompanion copyWith({
+    Value<int>? id,
+    Value<String>? title,
+    Value<String>? type,
+    Value<String>? linkPath,
+    Value<String>? status,
+  }) {
+    return MaterialsCompanion(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      type: type ?? this.type,
+      linkPath: linkPath ?? this.linkPath,
+      status: status ?? this.status,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
+    }
+    if (linkPath.present) {
+      map['link_path'] = Variable<String>(linkPath.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MaterialsCompanion(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('type: $type, ')
+          ..write('linkPath: $linkPath, ')
+          ..write('status: $status')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -1689,6 +2851,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $ArtworkBrushesTable artworkBrushes = $ArtworkBrushesTable(this);
   late final $ReferencesTable references = $ReferencesTable(this);
   late final $FeedbacksTable feedbacks = $FeedbacksTable(this);
+  late final $PostsTable posts = $PostsTable(this);
+  late final $TasksTable tasks = $TasksTable(this);
+  late final $MaterialsTable materials = $MaterialsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -1699,6 +2864,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     artworkBrushes,
     references,
     feedbacks,
+    posts,
+    tasks,
+    materials,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -1729,6 +2897,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         limitUpdateKind: UpdateKind.delete,
       ),
       result: [TableUpdate('feedbacks', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'artworks',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('posts', kind: UpdateKind.delete)],
     ),
   ]);
 }
@@ -1811,6 +2986,25 @@ final class $$ArtworksTableReferences
     ).filter((f) => f.artworkId.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_feedbacksRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$PostsTable, List<Post>> _postsRefsTable(
+    _$AppDatabase db,
+  ) => MultiTypedResultKey.fromTable(
+    db.posts,
+    aliasName: 'artworks__id__posts__artwork_id',
+  );
+
+  $$PostsTableProcessedTableManager get postsRefs {
+    final manager = $$PostsTableTableManager(
+      $_db,
+      $_db.posts,
+    ).filter((f) => f.artworkId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_postsRefsTable($_db));
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -1942,6 +3136,31 @@ class $$ArtworksTableFilterComposer
           }) => $$FeedbacksTableFilterComposer(
             $db: $db,
             $table: $db.feedbacks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> postsRefs(
+    Expression<bool> Function($$PostsTableFilterComposer f) f,
+  ) {
+    final $$PostsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.posts,
+      getReferencedColumn: (t) => t.artworkId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PostsTableFilterComposer(
+            $db: $db,
+            $table: $db.posts,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -2135,6 +3354,31 @@ class $$ArtworksTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> postsRefs<T extends Object>(
+    Expression<T> Function($$PostsTableAnnotationComposer a) f,
+  ) {
+    final $$PostsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.posts,
+      getReferencedColumn: (t) => t.artworkId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PostsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.posts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$ArtworksTableTableManager
@@ -2154,6 +3398,7 @@ class $$ArtworksTableTableManager
             bool artworkBrushesRefs,
             bool referencesRefs,
             bool feedbacksRefs,
+            bool postsRefs,
           })
         > {
   $$ArtworksTableTableManager(_$AppDatabase db, $ArtworksTable table)
@@ -2228,6 +3473,7 @@ class $$ArtworksTableTableManager
                 artworkBrushesRefs = false,
                 referencesRefs = false,
                 feedbacksRefs = false,
+                postsRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -2235,6 +3481,7 @@ class $$ArtworksTableTableManager
                     if (artworkBrushesRefs) db.artworkBrushes,
                     if (referencesRefs) db.references,
                     if (feedbacksRefs) db.feedbacks,
+                    if (postsRefs) db.posts,
                   ],
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
@@ -2299,6 +3546,26 @@ class $$ArtworksTableTableManager
                           referencedColumn: 'artwork_id',
                           typedResults: items,
                         ),
+                      if (postsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          Artwork,
+                          $ArtworksTable,
+                          Post,
+                          $PostsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ArtworksTableReferences
+                              ._postsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ArtworksTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).postsRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'artwork_id',
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -2323,6 +3590,7 @@ typedef $$ArtworksTableProcessedTableManager =
         bool artworkBrushesRefs,
         bool referencesRefs,
         bool feedbacksRefs,
+        bool postsRefs,
       })
     >;
 typedef $$BrushesTableCreateCompanionBuilder = BrushesCompanion Function({
@@ -3498,6 +4766,759 @@ typedef $$FeedbacksTableProcessedTableManager =
       Feedback,
       PrefetchHooks Function({bool artworkId})
     >;
+typedef $$PostsTableCreateCompanionBuilder = PostsCompanion Function({
+  Value<int> id,
+  required int artworkId,
+  required String platform,
+  required String url,
+  Value<int> likes,
+  Value<int> views,
+  Value<int> shares,
+  Value<int> upvotes,
+  Value<int> savings,
+});
+typedef $$PostsTableUpdateCompanionBuilder = PostsCompanion Function({
+  Value<int> id,
+  Value<int> artworkId,
+  Value<String> platform,
+  Value<String> url,
+  Value<int> likes,
+  Value<int> views,
+  Value<int> shares,
+  Value<int> upvotes,
+  Value<int> savings,
+});
+
+final class $$PostsTableReferences
+    extends BaseReferences<_$AppDatabase, $PostsTable, Post> {
+  $$PostsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $ArtworksTable _artworkIdTable(_$AppDatabase db) =>
+      db.artworks.createAlias('posts__artwork_id__artworks__id');
+
+  $$ArtworksTableProcessedTableManager get artworkId {
+    final $_column = $_itemColumn<int>('artwork_id')!;
+
+    final manager = $$ArtworksTableTableManager(
+      $_db,
+      $_db.artworks,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_artworkIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$PostsTableFilterComposer extends Composer<_$AppDatabase, $PostsTable> {
+  $$PostsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get platform => $composableBuilder(
+    column: $table.platform,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get url => $composableBuilder(
+    column: $table.url,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get likes => $composableBuilder(
+    column: $table.likes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get views => $composableBuilder(
+    column: $table.views,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get shares => $composableBuilder(
+    column: $table.shares,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get upvotes => $composableBuilder(
+    column: $table.upvotes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get savings => $composableBuilder(
+    column: $table.savings,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$ArtworksTableFilterComposer get artworkId {
+    final $$ArtworksTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.artworkId,
+      referencedTable: $db.artworks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ArtworksTableFilterComposer(
+            $db: $db,
+            $table: $db.artworks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PostsTableOrderingComposer
+    extends Composer<_$AppDatabase, $PostsTable> {
+  $$PostsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get platform => $composableBuilder(
+    column: $table.platform,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get url => $composableBuilder(
+    column: $table.url,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get likes => $composableBuilder(
+    column: $table.likes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get views => $composableBuilder(
+    column: $table.views,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get shares => $composableBuilder(
+    column: $table.shares,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get upvotes => $composableBuilder(
+    column: $table.upvotes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get savings => $composableBuilder(
+    column: $table.savings,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$ArtworksTableOrderingComposer get artworkId {
+    final $$ArtworksTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.artworkId,
+      referencedTable: $db.artworks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ArtworksTableOrderingComposer(
+            $db: $db,
+            $table: $db.artworks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PostsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PostsTable> {
+  $$PostsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get platform =>
+      $composableBuilder(column: $table.platform, builder: (column) => column);
+
+  GeneratedColumn<String> get url =>
+      $composableBuilder(column: $table.url, builder: (column) => column);
+
+  GeneratedColumn<int> get likes =>
+      $composableBuilder(column: $table.likes, builder: (column) => column);
+
+  GeneratedColumn<int> get views =>
+      $composableBuilder(column: $table.views, builder: (column) => column);
+
+  GeneratedColumn<int> get shares =>
+      $composableBuilder(column: $table.shares, builder: (column) => column);
+
+  GeneratedColumn<int> get upvotes =>
+      $composableBuilder(column: $table.upvotes, builder: (column) => column);
+
+  GeneratedColumn<int> get savings =>
+      $composableBuilder(column: $table.savings, builder: (column) => column);
+
+  $$ArtworksTableAnnotationComposer get artworkId {
+    final $$ArtworksTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.artworkId,
+      referencedTable: $db.artworks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ArtworksTableAnnotationComposer(
+            $db: $db,
+            $table: $db.artworks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PostsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PostsTable,
+          Post,
+          $$PostsTableFilterComposer,
+          $$PostsTableOrderingComposer,
+          $$PostsTableAnnotationComposer,
+          $$PostsTableCreateCompanionBuilder,
+          $$PostsTableUpdateCompanionBuilder,
+          (Post, $$PostsTableReferences),
+          Post,
+          PrefetchHooks Function({bool artworkId})
+        > {
+  $$PostsTableTableManager(_$AppDatabase db, $PostsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PostsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PostsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PostsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> artworkId = const Value.absent(),
+                Value<String> platform = const Value.absent(),
+                Value<String> url = const Value.absent(),
+                Value<int> likes = const Value.absent(),
+                Value<int> views = const Value.absent(),
+                Value<int> shares = const Value.absent(),
+                Value<int> upvotes = const Value.absent(),
+                Value<int> savings = const Value.absent(),
+              }) => PostsCompanion(
+                id: id,
+                artworkId: artworkId,
+                platform: platform,
+                url: url,
+                likes: likes,
+                views: views,
+                shares: shares,
+                upvotes: upvotes,
+                savings: savings,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int artworkId,
+                required String platform,
+                required String url,
+                Value<int> likes = const Value.absent(),
+                Value<int> views = const Value.absent(),
+                Value<int> shares = const Value.absent(),
+                Value<int> upvotes = const Value.absent(),
+                Value<int> savings = const Value.absent(),
+              }) => PostsCompanion.insert(
+                id: id,
+                artworkId: artworkId,
+                platform: platform,
+                url: url,
+                likes: likes,
+                views: views,
+                shares: shares,
+                upvotes: upvotes,
+                savings: savings,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$PostsTable, Post>(table),
+                  $$PostsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({artworkId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (artworkId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.artworkId,
+                        referencedTable: $$PostsTableReferences._artworkIdTable(
+                          db,
+                        ),
+                        referencedColumn: $$PostsTableReferences
+                            ._artworkIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$PostsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $PostsTable,
+      Post,
+      $$PostsTableFilterComposer,
+      $$PostsTableOrderingComposer,
+      $$PostsTableAnnotationComposer,
+      $$PostsTableCreateCompanionBuilder,
+      $$PostsTableUpdateCompanionBuilder,
+      (Post, $$PostsTableReferences),
+      Post,
+      PrefetchHooks Function({bool artworkId})
+    >;
+typedef $$TasksTableCreateCompanionBuilder = TasksCompanion Function({
+  Value<int> id,
+  required String title,
+  required DateTime taskDate,
+  Value<bool> done,
+});
+typedef $$TasksTableUpdateCompanionBuilder = TasksCompanion Function({
+  Value<int> id,
+  Value<String> title,
+  Value<DateTime> taskDate,
+  Value<bool> done,
+});
+
+class $$TasksTableFilterComposer extends Composer<_$AppDatabase, $TasksTable> {
+  $$TasksTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get taskDate => $composableBuilder(
+    column: $table.taskDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get done => $composableBuilder(
+    column: $table.done,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$TasksTableOrderingComposer
+    extends Composer<_$AppDatabase, $TasksTable> {
+  $$TasksTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get taskDate => $composableBuilder(
+    column: $table.taskDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get done => $composableBuilder(
+    column: $table.done,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$TasksTableAnnotationComposer
+    extends Composer<_$AppDatabase, $TasksTable> {
+  $$TasksTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get taskDate =>
+      $composableBuilder(column: $table.taskDate, builder: (column) => column);
+
+  GeneratedColumn<bool> get done =>
+      $composableBuilder(column: $table.done, builder: (column) => column);
+}
+
+class $$TasksTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $TasksTable,
+          Task,
+          $$TasksTableFilterComposer,
+          $$TasksTableOrderingComposer,
+          $$TasksTableAnnotationComposer,
+          $$TasksTableCreateCompanionBuilder,
+          $$TasksTableUpdateCompanionBuilder,
+          (Task, BaseReferences<_$AppDatabase, $TasksTable, Task>),
+          Task,
+          PrefetchHooks Function()
+        > {
+  $$TasksTableTableManager(_$AppDatabase db, $TasksTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TasksTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TasksTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TasksTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<DateTime> taskDate = const Value.absent(),
+                Value<bool> done = const Value.absent(),
+              }) => TasksCompanion(
+                id: id,
+                title: title,
+                taskDate: taskDate,
+                done: done,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String title,
+                required DateTime taskDate,
+                Value<bool> done = const Value.absent(),
+              }) => TasksCompanion.insert(
+                id: id,
+                title: title,
+                taskDate: taskDate,
+                done: done,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$TasksTable, Task>(table),
+                  BaseReferences<_$AppDatabase, $TasksTable, Task>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$TasksTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $TasksTable,
+      Task,
+      $$TasksTableFilterComposer,
+      $$TasksTableOrderingComposer,
+      $$TasksTableAnnotationComposer,
+      $$TasksTableCreateCompanionBuilder,
+      $$TasksTableUpdateCompanionBuilder,
+      (Task, BaseReferences<_$AppDatabase, $TasksTable, Task>),
+      Task,
+      PrefetchHooks Function()
+    >;
+typedef $$MaterialsTableCreateCompanionBuilder = MaterialsCompanion Function({
+  Value<int> id,
+  required String title,
+  required String type,
+  Value<String> linkPath,
+  Value<String> status,
+});
+typedef $$MaterialsTableUpdateCompanionBuilder = MaterialsCompanion Function({
+  Value<int> id,
+  Value<String> title,
+  Value<String> type,
+  Value<String> linkPath,
+  Value<String> status,
+});
+
+class $$MaterialsTableFilterComposer
+    extends Composer<_$AppDatabase, $MaterialsTable> {
+  $$MaterialsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get linkPath => $composableBuilder(
+    column: $table.linkPath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$MaterialsTableOrderingComposer
+    extends Composer<_$AppDatabase, $MaterialsTable> {
+  $$MaterialsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get linkPath => $composableBuilder(
+    column: $table.linkPath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$MaterialsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $MaterialsTable> {
+  $$MaterialsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
+
+  GeneratedColumn<String> get linkPath =>
+      $composableBuilder(column: $table.linkPath, builder: (column) => column);
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+}
+
+class $$MaterialsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $MaterialsTable,
+          Material,
+          $$MaterialsTableFilterComposer,
+          $$MaterialsTableOrderingComposer,
+          $$MaterialsTableAnnotationComposer,
+          $$MaterialsTableCreateCompanionBuilder,
+          $$MaterialsTableUpdateCompanionBuilder,
+          (Material, BaseReferences<_$AppDatabase, $MaterialsTable, Material>),
+          Material,
+          PrefetchHooks Function()
+        > {
+  $$MaterialsTableTableManager(_$AppDatabase db, $MaterialsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MaterialsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$MaterialsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$MaterialsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String> type = const Value.absent(),
+                Value<String> linkPath = const Value.absent(),
+                Value<String> status = const Value.absent(),
+              }) => MaterialsCompanion(
+                id: id,
+                title: title,
+                type: type,
+                linkPath: linkPath,
+                status: status,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String title,
+                required String type,
+                Value<String> linkPath = const Value.absent(),
+                Value<String> status = const Value.absent(),
+              }) => MaterialsCompanion.insert(
+                id: id,
+                title: title,
+                type: type,
+                linkPath: linkPath,
+                status: status,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$MaterialsTable, Material>(table),
+                  BaseReferences<_$AppDatabase, $MaterialsTable, Material>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$MaterialsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $MaterialsTable,
+      Material,
+      $$MaterialsTableFilterComposer,
+      $$MaterialsTableOrderingComposer,
+      $$MaterialsTableAnnotationComposer,
+      $$MaterialsTableCreateCompanionBuilder,
+      $$MaterialsTableUpdateCompanionBuilder,
+      (Material, BaseReferences<_$AppDatabase, $MaterialsTable, Material>),
+      Material,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -3512,4 +5533,10 @@ class $AppDatabaseManager {
       $$ReferencesTableTableManager(_db, _db.references);
   $$FeedbacksTableTableManager get feedbacks =>
       $$FeedbacksTableTableManager(_db, _db.feedbacks);
+  $$PostsTableTableManager get posts =>
+      $$PostsTableTableManager(_db, _db.posts);
+  $$TasksTableTableManager get tasks =>
+      $$TasksTableTableManager(_db, _db.tasks);
+  $$MaterialsTableTableManager get materials =>
+      $$MaterialsTableTableManager(_db, _db.materials);
 }

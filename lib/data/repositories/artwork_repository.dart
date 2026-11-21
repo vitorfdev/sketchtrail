@@ -48,8 +48,8 @@ class ArtworkRepository {
     ])..where(_db.artworkBrushes.artworkId.equals(artworkId));
 
     return query.watch().map(
-          (rows) => rows.map((row) => row.readTable(_db.brushes)).toList(),
-        );
+      (rows) => rows.map((row) => row.readTable(_db.brushes)).toList(),
+    );
   }
 
   Future<void> addBrushToArtwork({
@@ -60,16 +60,20 @@ class ArtworkRepository {
     if (normalized.isEmpty) return;
 
     await _db.transaction(() async {
-      await _db.into(_db.brushes).insert(
+      await _db
+          .into(_db.brushes)
+          .insert(
             BrushesCompanion.insert(name: normalized),
             mode: InsertMode.insertOrIgnore,
           );
 
-      final brush = await (_db.select(_db.brushes)
-            ..where((tbl) => tbl.name.equals(normalized)))
-          .getSingle();
+      final brush = await (_db.select(
+        _db.brushes,
+      )..where((tbl) => tbl.name.equals(normalized))).getSingle();
 
-      await _db.into(_db.artworkBrushes).insert(
+      await _db
+          .into(_db.artworkBrushes)
+          .insert(
             ArtworkBrushesCompanion.insert(
               artworkId: artworkId,
               brushId: brush.id,
@@ -83,19 +87,18 @@ class ArtworkRepository {
     required int artworkId,
     required int brushId,
   }) {
-    return (_db.delete(_db.artworkBrushes)
-          ..where(
-            (tbl) =>
-                tbl.artworkId.equals(artworkId) & tbl.brushId.equals(brushId),
-          ))
+    return (_db.delete(_db.artworkBrushes)..where(
+          (tbl) =>
+              tbl.artworkId.equals(artworkId) & tbl.brushId.equals(brushId),
+        ))
         .go();
   }
 
   // References (one-to-many)
   Stream<List<Reference>> watchReferencesForArtwork(int artworkId) {
-    return (_db.select(_db.references)
-          ..where((tbl) => tbl.artworkId.equals(artworkId)))
-        .watch();
+    return (_db.select(
+      _db.references,
+    )..where((tbl) => tbl.artworkId.equals(artworkId))).watch();
   }
 
   Future<int> addReference(ReferencesCompanion entry) {
@@ -120,5 +123,26 @@ class ArtworkRepository {
 
   Future<int> removeFeedback(int id) {
     return (_db.delete(_db.feedbacks)..where((tbl) => tbl.id.equals(id))).go();
+  }
+
+  // Posts (one-to-many)
+  Stream<List<Post>> watchPostsForArtwork(int artworkId) {
+    return (_db.select(
+      _db.posts,
+    )..where((tbl) => tbl.artworkId.equals(artworkId))).watch();
+  }
+
+  Future<int> addPost(PostsCompanion entry) {
+    return _db.into(_db.posts).insert(entry);
+  }
+
+  Future<int> updatePost(PostsCompanion entry) {
+    return (_db.update(
+      _db.posts,
+    )..where((tbl) => tbl.id.equals(entry.id.value))).write(entry);
+  }
+
+  Future<int> removePost(int id) {
+    return (_db.delete(_db.posts)..where((tbl) => tbl.id.equals(id))).go();
   }
 }
